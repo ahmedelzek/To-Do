@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/activity_bg_color">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/activity_bg_color"
+    tools:context=".activities.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -30,9 +32,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:fabAnchorMode="cradle"
         android:backgroundTint="@color/bottom_nav_bg_color"
         app:fabAlignmentMode="center"
-        app:fabCradleMargin="8dp"
+        app:fabCradleMargin="20dp"
         app:fabCradleVerticalOffset="8dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="15dp"
             app:backgroundTint="@android:color/transparent"
             app:elevation="0dp"
             app:itemActiveIndicatorStyle="@null"

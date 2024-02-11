@@ -38,6 +38,9 @@
 
     <style name="fab_style" parent="Widget.Design.FloatingActionButton">
         <item name="shapeAppearanceOverlay">@style/fab_rounded</item>
+        <item name="borderWidth">3dp</item>
+        <item name="addElevationShadow">true</item>
+        <item name="backgroundTint">@color/white</item>
     </style>
 
     <style name="fab_rounded" parent="ShapeAppearance.MaterialComponents.SmallComponent">
@@ -56,7 +59,6 @@
 
     <style name="BottomSheetStyle2" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheet_bg</item>
-        <!-- Add other style attributes as needed -->
     </style>
 
 </resources>

@@ -1,21 +1,133 @@
 package com.example.to_do.fragments
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.to_do.R
+import android.widget.TimePicker
+import androidx.core.widget.addTextChangedListener
+import com.example.to_do.databinding.FragmentAddTaskBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class AddTaskFragment : BottomSheetDialogFragment() {
 
+    private lateinit var binding: FragmentAddTaskBinding
+    private var selectDate = Calendar.getInstance()
+
+    //Set the current date and current time in global to use it any time
+    private val currentDate =
+        "${selectDate.get(Calendar.DAY_OF_MONTH)} / ${selectDate.get(Calendar.MONTH) + 1} /${
+            selectDate.get(Calendar.YEAR)
+        }"
+    private val currentTime =
+        SimpleDateFormat("hh: mm a", Locale.getDefault()).format(Calendar.getInstance().time)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_task, container, false)
+    ): View {
+        binding = FragmentAddTaskBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        handleClicks()
+    }
+
+    private fun handleClicks() {
+        binding.addTaskBtn.setOnClickListener {
+            if (validate()) {
+
+                dismiss()
+            }
+        }
+        binding.selectDateTv.setOnClickListener {
+            showDatePicker()
+        }
+        binding.selectTimeTv.setOnClickListener {
+            showTimePicker()
+        }
+        setTime()
+    }
+
+    private fun validate(): Boolean {
+        var isValid = true
+        val titleText = binding.titleTil.editText!!.text.toString()
+        val descriptionText = binding.descriptionTil.editText!!.text.toString()
+        if (titleText.isEmpty()) {
+            binding.titleTil.error = "Please, Enter A Valid Title"
+            isValid = false
+        } else {
+            binding.titleTil.error = null
+        }
+
+        if (descriptionText.isEmpty()) {
+            binding.descriptionTil.error = "Please, Enter A Valid Description"
+            isValid = false
+        } else {
+            binding.titleTil.editText!!.addTextChangedListener {
+                binding.titleTil.error = null
+            }
+        }
+        return isValid
+    }
+
+    private fun removeError() {
+        binding.titleTil.editText!!.addTextChangedListener {
+            validate()
+        }
+        binding.descriptionTil.editText!!.addTextChangedListener {
+            validate()
+        }
+    }
+
+    private fun setTime() {
+        binding.selectDateTv.text = currentDate
+        binding.selectTimeTv.text = currentTime
+    }
+
+    private fun showDatePicker() {
+        val datePicker = DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                selectDate.set(Calendar.YEAR, year)
+                selectDate.set(Calendar.MONTH, month)
+                selectDate.set(Calendar.DAY_OF_MONTH, day)
+                currentDate
+            },
+            selectDate.get(Calendar.YEAR),
+            selectDate.get(Calendar.MONTH),
+            selectDate.get(Calendar.DAY_OF_MONTH)
+        )
+        datePicker.show()
+    }
+
+    private fun showTimePicker() {
+        val cal = Calendar.getInstance()
+        val hour = cal.get(Calendar.HOUR_OF_DAY)
+        val minute = cal.get(Calendar.MINUTE)
+
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minuteOfHour: Int ->
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minuteOfHour)
+                binding.selectTimeTv.text =
+                    SimpleDateFormat("hh: mm a", Locale.getDefault()).format(calendar.time)
+
+            },
+            hour,
+            minute,
+            false
+        )
+        timePickerDialog.show()
+
+    }
 }

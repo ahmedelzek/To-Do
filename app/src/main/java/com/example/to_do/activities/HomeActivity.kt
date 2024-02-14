@@ -10,7 +10,8 @@ import com.example.to_do.fragments.SettingsFragment
 import com.example.to_do.fragments.TasksFragment
 
 class HomeActivity : AppCompatActivity() {
-    lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: ActivityHomeBinding
+    private var tasksFragment = TasksFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -24,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.tasks -> {
-                    loadFragment(TasksFragment())
+                    loadFragment(tasksFragment)
                     true
                 }
 
@@ -51,11 +52,13 @@ class HomeActivity : AppCompatActivity() {
 
     private fun loadTasksFragment(savedInstanceState: Bundle?) {
         if (savedInstanceState == null)
-            loadFragment(TasksFragment())
+            loadFragment(tasksFragment)
     }
 
     private fun showAddTaskFragment() {
-        val bottomSheetFragment = AddTaskFragment()
+        val bottomSheetFragment = AddTaskFragment {
+            tasksFragment.refreshTasksList()
+        }
         bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
     }
 }

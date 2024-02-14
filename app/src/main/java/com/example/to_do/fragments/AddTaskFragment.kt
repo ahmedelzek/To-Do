@@ -8,24 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TimePicker
 import androidx.core.widget.addTextChangedListener
+import com.example.to_do.clearTime
 import com.example.to_do.databinding.FragmentAddTaskBinding
+import com.example.to_do.dp.TaskDM
+import com.example.to_do.dp.TaskDatabase
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddTaskFragment : BottomSheetDialogFragment() {
+class AddTaskFragment(val onAddClick: () -> Unit) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddTaskBinding
     private var selectDate = Calendar.getInstance()
-
-    //Set the current date and current time in global to use it any time
-    private val currentDate =
-        "${selectDate.get(Calendar.DAY_OF_MONTH)} / ${selectDate.get(Calendar.MONTH) + 1} /${
-            selectDate.get(Calendar.YEAR)
-        }"
-    private val currentTime =
-        SimpleDateFormat("hh: mm a", Locale.getDefault()).format(Calendar.getInstance().time)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,10 +37,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
 
     private fun handleClicks() {
         binding.addTaskBtn.setOnClickListener {
-            if (validate()) {
-
-                dismiss()
-            }
+            addTask()
         }
         binding.selectDateTv.setOnClickListener {
             showDatePicker()
@@ -78,18 +70,14 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         return isValid
     }
 
-    private fun removeError() {
-        binding.titleTil.editText!!.addTextChangedListener {
-            validate()
-        }
-        binding.descriptionTil.editText!!.addTextChangedListener {
-            validate()
-        }
-    }
-
     private fun setTime() {
-        binding.selectDateTv.text = currentDate
-        binding.selectTimeTv.text = currentTime
+        binding.selectDateTv.text =
+            "${selectDate.get(Calendar.DAY_OF_MONTH)} / ${selectDate.get(Calendar.MONTH) + 1} /${
+                selectDate.get(Calendar.YEAR)
+            }"
+        binding.selectTimeTv.text =
+            SimpleDateFormat("hh: mm a", Locale.getDefault()).format(Calendar.getInstance().time)
+
     }
 
     private fun showDatePicker() {
@@ -99,7 +87,10 @@ class AddTaskFragment : BottomSheetDialogFragment() {
                 selectDate.set(Calendar.YEAR, year)
                 selectDate.set(Calendar.MONTH, month)
                 selectDate.set(Calendar.DAY_OF_MONTH, day)
-                currentDate
+                binding.selectDateTv.text =
+                    "${selectDate.get(Calendar.DAY_OF_MONTH)} / ${selectDate.get(Calendar.MONTH) + 1} /${
+                        selectDate.get(Calendar.YEAR)
+                    }"
             },
             selectDate.get(Calendar.YEAR),
             selectDate.get(Calendar.MONTH),
@@ -129,5 +120,24 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         )
         timePickerDialog.show()
 
+    }
+
+    private fun addTask() {
+        if (validate()) {
+            val title = binding.titleTil.editText!!.text.toString()
+            val description = binding.descriptionTil.editText!!.text.toString()
+            val time = binding.selectDateTv.text.toString()
+            selectDate.clearTime()
+            val task = TaskDM(
+                title = title,
+                description = description,
+                time = time,
+                date = selectDate.timeInMillis,
+                isDone = false
+            )
+            TaskDatabase.getInstance(requireActivity().applicationContext).taskDao().insert(task)
+            dismiss()
+            onAddClick.invoke()
+        }
     }
 }

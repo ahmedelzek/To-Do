@@ -20,6 +20,6 @@ interface TaskDao {
     @Query("SELECT * FROM TaskDM")
     fun showAllTasks(): List<TaskDM>
 
-    @Query("SELECT * FROM TaskDM WHERE time = :date")
+    @Query("SELECT * FROM TaskDM WHERE date = :date")
     fun getTasksByDate(date: Long): List<TaskDM>
 }

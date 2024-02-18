@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddTaskFragment(val onAddClick: () -> Unit) : BottomSheetDialogFragment() {
+class AddTaskFragment(private val onAddClick: () -> Unit) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddTaskBinding
     private var selectDate = Calendar.getInstance()
@@ -106,7 +106,7 @@ class AddTaskFragment(val onAddClick: () -> Unit) : BottomSheetDialogFragment() 
 
         val timePickerDialog = TimePickerDialog(
             requireContext(),
-            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minuteOfHour: Int ->
+            { _: TimePicker, hourOfDay: Int, minuteOfHour: Int ->
                 val calendar = Calendar.getInstance()
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minuteOfHour)
@@ -126,12 +126,14 @@ class AddTaskFragment(val onAddClick: () -> Unit) : BottomSheetDialogFragment() 
         if (validate()) {
             val title = binding.titleTil.editText!!.text.toString()
             val description = binding.descriptionTil.editText!!.text.toString()
-            val time = binding.selectDateTv.text.toString()
+            val date = binding.selectDateTv.text.toString()
+            val time = binding.selectTimeTv.text.toString()
             selectDate.clearTime()
             val task = TaskDM(
                 title = title,
                 description = description,
                 time = time,
+                dateAsString = date,
                 date = selectDate.timeInMillis,
                 isDone = false
             )

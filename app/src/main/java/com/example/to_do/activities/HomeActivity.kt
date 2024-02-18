@@ -20,7 +20,6 @@ class HomeActivity : AppCompatActivity() {
         handleClicks()
         loadTasksFragment(savedInstanceState)
     }
-
     private fun handleClicks() {
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {

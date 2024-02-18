@@ -63,7 +63,7 @@
                     tools:text="Play Basket Ball" />
 
                 <TextView
-                    android:id="@+id/time"
+                    android:id="@+id/date"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="20dp"
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
-                    android:background="@color/white"
+                    android:background="@color/bottom_nav_bg_color"
                     android:src="@drawable/check_mark"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

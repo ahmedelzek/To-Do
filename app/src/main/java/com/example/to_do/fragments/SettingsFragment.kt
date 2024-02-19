@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import com.example.to_do.Constant
 import com.example.to_do.R
 import com.example.to_do.databinding.FragmentSettingsBinding
+import java.util.Locale
 
 
 class SettingsFragment : Fragment() {
 
-
-    private lateinit var languages: Array<String>
-    private lateinit var themes: Array<String>
     private lateinit var binding: FragmentSettingsBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,21 +38,31 @@ class SettingsFragment : Fragment() {
     }
 
     private fun selectLanguage() {
-        languages = resources.getStringArray(R.array.languages)
-
+        val languages = resources.getStringArray(R.array.languages)
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, languages)
-
-        binding.autoCompleteTVLanguages.setOnItemClickListener { _, _, postion, _ ->
-            val selectItem = adapter.getItem(postion)
-        }
         binding.autoCompleteTVLanguages.setAdapter(adapter)
+        binding.autoCompleteTVLanguages.setOnItemClickListener { _, _, position, _ ->
+            val selectItem = adapter.getItem(position)
+            when (position) {
+                0 -> {
+                    setLocale(Constant.ENGLISH_CODE)
+                    binding.autoCompleteTVLanguages.setText(selectItem.toString())
+                }
+
+                1 -> {
+                    setLocale(Constant.ARABIC_CODE)
+                    binding.autoCompleteTVLanguages.setText(selectItem.toString())
+                }
+            }
+        }
     }
 
     private fun selectTheme() {
-        themes = resources.getStringArray(R.array.modes)
+        val themes = resources.getStringArray(R.array.modes)
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, themes)
+        binding.autoCompleteTVModes.setAdapter(adapter)
         binding.autoCompleteTVModes.setOnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> {
@@ -69,7 +78,6 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
-        binding.autoCompleteTVModes.setAdapter(adapter)
     }
 
     private fun toggleThemeForLight(fragment: Fragment) {
@@ -94,4 +102,17 @@ class SettingsFragment : Fragment() {
         AppCompatDelegate.setDefaultNightMode(newLightMode)
     }
 
+    private fun setLocale(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.setLocale(locale)
+        activity?.let {
+            @Suppress("DEPRECATION")
+            requireActivity().baseContext.resources.updateConfiguration(
+                config,
+                requireActivity().baseContext.resources.displayMetrics
+            )
+        }
+    }
 }

@@ -2,19 +2,15 @@ package com.example.to_do.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.widget.TimePicker
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.to_do.Constant
 import com.example.to_do.clearTime
 import com.example.to_do.databinding.ActivityTaskDetailsBinding
-
 import com.example.to_do.dp.TaskDM
 import com.example.to_do.dp.TaskDatabase
-import com.example.to_do.fragments.TasksFragment
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -84,7 +80,6 @@ class TaskDetailsActivity : AppCompatActivity() {
             task?.date = selectedDate.timeInMillis
             task?.isDone = task?.isDone
             TaskDatabase.getInstance(this).taskDao().update(task!!)
-            startActivity(Intent(this, TasksFragment::class.java))
             finish()
         }
 
